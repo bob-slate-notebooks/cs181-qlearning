@@ -28,8 +28,8 @@ class Learner:
         else:
             if action == None:
                 action = 0
-            self.Q_arr[(state, action)]= 0
-            return 0
+            self.Q_arr[(state, action)]= -5
+            return -5
 
     def set_q(self, state, action, q):
         state_tuple = self.convert_state(state)
