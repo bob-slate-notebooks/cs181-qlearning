@@ -51,7 +51,10 @@ for ii in xrange(iters):
 
     # Loop until you hit something.
     while swing.game_loop():
+<<<<<<< HEAD
         print swing.get_state()
+=======
+>>>>>>> f5f26398ab31bce32d8faecdaa9afa2515e05f57
         pass
 
     # Reset the state of the learner.
