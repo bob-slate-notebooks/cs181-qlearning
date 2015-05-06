@@ -5,53 +5,30 @@ from SwingyMonkey import SwingyMonkey
 
 class Learner:
 
-    def __init__(self, epsilon, alpha, gamma):
+    def __init__(self):
         self.last_state  = None
         self.last_action = None
         self.last_reward = None
-
-        # initializations for Q-Learning
-        self.epsilon = epsilon
-        self.alpha = alpha
-        self.gamma = gamma
-        self.actions = [0, 1]
-        self.Q = {}
 
     def reset(self):
         self.last_state  = None
         self.last_action = None
         self.last_reward = None
 
-    def update_Q(self, state, action, reward):
-        self.last_reward = reward
-
     def action_callback(self, state):
         '''Implement this function to learn things and take actions.
         Return 0 if you don't want to jump and 1 if you do.'''
 
-        # exploration vs exploitation loop
-        if npr.random() < self.epsilon:
-            new_action = npr.rand() < 0.1
-        else:
-            # for a in self.actions:
-            #     if (state, a) not in self.Q:
-            #         self.Q[(state, a)] = 0
-            #     q_array += [self.Q[(state, a)]]
-            q_array = [2, 1]
-            max_q = max(q_array)
-            count = q_array.count(max_q)
-            if count > 1:
-                best = [i for i in range(len(self.actions)) if q_array[i] == maxQ]
-                i = npr.choice(best)
-            else:
-                i = q_array.index(max_q)
-            new_action = self.actions[i]
-        
-        new_state = state
+        # You might do some learning here based on the current state and the last state.
+
+        # You'll need to take an action, too, and return it.
+        # Return 0 to swing and 1 to jump.
+
+        new_action = npr.rand() < 0.1
+        new_state  = state
+
         self.last_action = new_action
         self.last_state  = new_state
-
-        self.update_Q(new_state, new_action, self.reward_callback)
 
         return self.last_action
 
@@ -61,10 +38,8 @@ class Learner:
         self.last_reward = reward
 
 iters = 100
-epsilon = 0.1
-alpha = 0.2
-gamma = 0.9
-learner = Learner(epsilon, alpha, gamma)
+
+learner = Learner()
 
 for ii in xrange(iters):
 
