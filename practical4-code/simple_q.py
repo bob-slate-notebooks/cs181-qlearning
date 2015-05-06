@@ -24,13 +24,15 @@ class Learner:
         if (state, action) in self.Q_arr:
             return self.Q_arr[(state, action)]
         else:
+            if action == None:
+                action = 0
             self.Q_arr[(state, action)]= 0
             return 0
 
     def set_q(self, state, action, q):
         state_tuple = self.convert_state(state)
         self.Q_arr[(state_tuple, action)] = q
-        print self.Q_arr
+        #print self.Q_arr
 
 
     def convert_state(self, state):
@@ -66,66 +68,6 @@ class Learner:
 
             return (vel, gap, tree_far)
 
-            '''monkey_top = state["monkey"]["top"]
-            if monkey_top < 50:
-                monkey_top = 30
-            elif monkey_top < 150:
-                monkey_top = 100
-            #elif monkey_top < 250:
-            #    monkey_top = 200
-            #elif monkey_top < 350:
-            #    monkey_top = 300
-            else:
-                monkey_top = 400
-
-            monkey_bot = state["monkey"]["bot"]
-            if monkey_bot < 50:
-                monkey_bot = 30
-            elif monkey_bot < 150:
-                monkey_bot = 100
-            #elif monkey_bot < 250:
-            #    monkey_bot = 200
-            #elif monkey_bot < 350:
-            #    monkey_bot = 300
-            else:
-                monkey_bot = 400   
-
-            tree_dist = state["tree"]["dist"]
-            if tree_dist < 150:
-                tree_dist = 100
-            elif tree_dist < 250:
-                tree_dist = 200
-            #elif tree_dist  < 350:
-            #    tree_dist  = 300
-            #elif tree_dist  < 450:
-            #    tree_dist = 400
-            else:
-                tree_dist  = 500 
-
-            tree_top = state["tree"]["top"]
-            if tree_top < 50:
-                tree_top = 30
-            elif tree_top < 150:
-                tree_top= 100
-            #elif tree_top < 250:
-            #    tree_top= 200
-            #elif tree_top < 350:
-            #    tree_top = 300
-            else:
-                tree_top = 400
-
-            tree_bot = state["tree"]["bot"]
-            if tree_bot < 50:
-                tree_bot = 30
-            elif tree_bot < 150:
-                tree_bot= 100
-            #elif tree_bot < 250:
-            #    tree_bot= 200
-            #elif tree_bot < 350:
-            #    tree_bot = 300
-            else:
-                tree_bot = 400
-            return (vel,monkey_top,monkey_bot, tree_dist, tree_top , tree_bot)'''
         else:
             return (0,0,0)
 
@@ -141,7 +83,10 @@ class Learner:
             reward = 0
 
         new_q = old_q + alpha * (reward + act * gamma - old_q)
+        if self.last_action == None:
+            self.last_action = 0
         self.set_q(state, self.last_action, new_q)
+        print state, act
 
         new_action = act
         new_state  = state
