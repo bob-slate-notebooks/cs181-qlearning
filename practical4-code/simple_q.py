@@ -12,6 +12,8 @@ class Learner:
         self.last_state  = None
         self.last_action = None
         self.last_reward = None
+        self.times = 0
+        self.epsilon = 0.9
         self.Q_arr = {}
 
     def reset(self):
@@ -37,15 +39,17 @@ class Learner:
 
     def convert_state(self, state):
         if state:
-            vel = state["monkey"]["vel"]
-            if vel < 0:
-                vel = -10
-            elif vel < 50:
-                vel = 30
+            monkey_gap = state["monkey"]["top"] - state["tree"]["bot"]
+            if monkey_gap < 100:
+                monkey_gap = 100
+            elif monkey_gap < 300:
+                monkey_gap = 200
+            elif monkey_gap < 500:
+                monkey_gap = 400
             else:
-                vel = 80
+                monkey_gap = 500
 
-            gap = state["tree"]["top"] - state["tree"]["bot"]
+            '''gap = state["tree"]["top"] - state["monkey"]["bot"]
             if gap < 100:
                 gap = 100
             elif gap < 300:
@@ -53,7 +57,7 @@ class Learner:
             elif gap < 500:
                 gap = 400
             else:
-                gap = 500
+                gap = 500'''
 
 
             tree_far = state["tree"]["dist"]
@@ -63,10 +67,11 @@ class Learner:
                 tree_far = 200
             elif tree_far < 500:
                 tree_far = 400
+
             else:
                 tree_far = 500
 
-            return (vel, gap, tree_far)
+            return (monkey_gap, tree_far)
 
         else:
             return (0,0,0)
@@ -75,18 +80,26 @@ class Learner:
         old_q = self.get_q(self.convert_state(self.last_state), self.last_action)
         if self.get_q(self.convert_state(state), 1)> self.get_q(self.convert_state(state), 0):
             act = 1
+            act_q = self.get_q(self.convert_state(state), 1)
         else:
             act = 0
+            act_q = self.get_q(self.convert_state(state), 0)
         if self.last_reward:
             reward = self.last_reward
         else:
             reward = 0
 
-        new_q = old_q + alpha * (reward + act * gamma - old_q)
+        if npr.random() < self.epsilon:
+            act = npr.randint(0, 1)
+            self.epsilon = self.epsilon * 0.5
+
+
+        new_q = old_q + alpha * ((reward +  act_q* gamma )- old_q)
         if self.last_action == None:
             self.last_action = 0
-        self.set_q(state, self.last_action, new_q)
-        print state, act
+        self.set_q(self.last_state, self.last_action, new_q)
+        #print state, act
+        print self.Q_arr
 
         new_action = act
         new_state  = state
