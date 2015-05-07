@@ -29,12 +29,12 @@ class Learner:
             if action == None:
                 action = 0
             self.Q_arr[(state, action)]= -5
+            # initialize q values to negative values, this helped constant jumping
             return -5
 
     def set_q(self, state, action, q):
         state_tuple = self.convert_state(state)
         self.Q_arr[(state_tuple, action)] = q
-        #print self.Q_arr
 
 
     def convert_state(self, state):
@@ -48,16 +48,6 @@ class Learner:
                 monkey_gap = 400
             else:
                 monkey_gap = 500
-
-            '''gap = state["tree"]["top"] - state["monkey"]["bot"]
-            if gap < 100:
-                gap = 100
-            elif gap < 300:
-                gap = 200
-            elif gap < 500:
-                gap = 400
-            else:
-                gap = 500'''
 
 
             tree_far = state["tree"]["dist"]
@@ -77,6 +67,7 @@ class Learner:
             return (0,0,0)
 
     def action_callback(self, state):
+
         old_q = self.get_q(self.convert_state(self.last_state), self.last_action)
         if self.get_q(self.convert_state(state), 1)> self.get_q(self.convert_state(state), 0):
             act = 1
@@ -87,19 +78,20 @@ class Learner:
         if self.last_reward:
             reward = self.last_reward
         else:
+            # only run on the first ever entry when reward is None
             reward = 0
 
+        # epsilon greedy
         if npr.random() < self.epsilon:
             act = npr.randint(0, 1)
             self.epsilon = self.epsilon * 0.5
 
 
+        # actual q updating
         new_q = old_q + alpha * ((reward +  act_q* gamma )- old_q)
         if self.last_action == None:
             self.last_action = 0
         self.set_q(self.last_state, self.last_action, new_q)
-        #print state, act
-        print self.Q_arr
 
         new_action = act
         new_state  = state
